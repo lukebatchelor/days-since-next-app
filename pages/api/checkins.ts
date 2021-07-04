@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { GetUsersResponse, PostUsersRequest } from 'typings/api';
+import { PrismaClient } from '@prisma/client';
 
 const prismaClient = new PrismaClient();
 
-const createUser: NextApiHandler = async (req, res) => {
+const createCheckin: NextApiHandler = async (req, res) => {
   try {
     return res.status(200).json({});
   } catch (err) {
@@ -12,25 +11,24 @@ const createUser: NextApiHandler = async (req, res) => {
   }
 };
 
-const getUsers: NextApiHandler<GetUsersResponse> = async (req, res) => {
+const getCheckins: NextApiHandler = async (req, res) => {
   try {
-    const users = await prismaClient.user.findMany();
-
-    return res.status(200).json({ users });
+    const checkins = await prismaClient.checkin.findMany();
+    return res.status(200).json({ checkins });
   } catch (err) {
     return res.status(500).end('Internal server error');
   }
 };
 
-const updateUser: NextApiHandler = (req, res) => {
+const editCheckin: NextApiHandler = async (req, res) => {
   try {
     return res.status(200).json({});
-  } catch (error) {
+  } catch (err) {
     return res.status(500).end('Internal server error');
   }
 };
 
-const removeUser: NextApiHandler = (req, res) => {
+const removeCheckin: NextApiHandler = (req, res) => {
   try {
     return res.status(200).json({});
   } catch (error) {
@@ -41,13 +39,13 @@ const removeUser: NextApiHandler = (req, res) => {
 const handler: NextApiHandler = (req, res) => {
   switch (req.method) {
     case 'POST':
-      return createUser(req, res);
+      return createCheckin(req, res);
     case 'GET':
-      return getUsers(req, res);
+      return getCheckins(req, res);
     case 'PUT':
-      return updateUser(req, res);
+      return editCheckin(req, res);
     case 'DELETE':
-      return removeUser(req, res);
+      return removeCheckin(req, res);
     default:
       return res.status(404).json({
         statusCode: 404,

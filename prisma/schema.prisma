@@ -17,14 +17,15 @@ model User {
 }
 
 model Tracker {
-  id    Int     @id @default(autoincrement())
-  name String
-  checkins Checkin[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  expiry_days Int       @default(0)
+  checkins    Checkin[]
 }
 
 model Checkin {
-  id     Int      @id @default(autoincrement())
-  tracker Tracker @relation(fields: [tracker_id], references: [id])
-  tracker_id Int
+  id           Int      @id @default(autoincrement())
+  tracker      Tracker  @relation(fields: [tracker_id], references: [id])
+  tracker_id   Int
   checkin_date DateTime @default(now())
 }
