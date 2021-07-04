@@ -27,7 +27,8 @@ function getDaysBetween(d1: Date, d2: Date) {
   console.log({ d1, d2 });
   const d1Start = new Date(d1.toISOString().split('T')[0]);
   const d2Start = new Date(d2.toISOString().split('T')[0]);
-  return Math.round(Math.abs(d1Start - d2Start) / (1000 * 60 * 60 * 24)); // @ts-ignore
+  // @ts-ignore
+  return Math.round(Math.abs(d1Start - d2Start) / (1000 * 60 * 60 * 24));
 }
 
 type TrackingTileProps = {
