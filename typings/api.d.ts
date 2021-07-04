@@ -7,3 +7,7 @@ declare type PostUsersRequest = {
   name: string;
   expiryDays: number;
 };
+declare type PostCheckinsReq = {
+  date: Date;
+  trackerId: number;
+};

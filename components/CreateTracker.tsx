@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Backdrop, Box, Button, Fab, Fade, makeStyles, Modal, Slide, TextField, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Controller, useForm } from 'react-hook-form';
+import { AppContext } from './contexts/AppContext';
 
 const useStyles = makeStyles((theme) => ({
   createButton: {
@@ -35,9 +36,9 @@ const defaultValues: FormValues = {
   expiryDays: 7,
 };
 
-type CreateTrackerProps = {};
-export function CreateTracker(props: CreateTrackerProps) {
+export function CreateTracker() {
   const classes = useStyles();
+  const appContext = useContext(AppContext);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const { handleSubmit, control } = useForm<FormValues>({ defaultValues });
 
@@ -50,7 +51,11 @@ export function CreateTracker(props: CreateTrackerProps) {
     console.log({ data });
     fetch('/api/trackers', { method: 'POST', body: JSON.stringify({ name, expiryDays }) })
       .then((r) => r.json())
-      .then(console.log);
+      .then(console.log)
+      .then(() => {
+        appContext.refresh();
+        setOpen(false);
+      });
   };
 
   return (

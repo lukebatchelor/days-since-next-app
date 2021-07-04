@@ -7,8 +7,8 @@ const prismaClient = new PrismaClient();
 const createTracker: NextApiHandler = async (req, res) => {
   try {
     const { name, expiryDays }: PostUsersRequest = JSON.parse(req.body);
-    const result = await prismaClient.tracker.create({ data: { name, expiry_days: expiryDays } });
-    return res.status(200).send({ tracker: result });
+    const tracker = await prismaClient.tracker.create({ data: { name, expiry_days: expiryDays } });
+    return res.status(200).send({ tracker });
   } catch (err) {
     console.error(err);
     return res.status(500).end('Internal server error');
