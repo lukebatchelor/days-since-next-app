@@ -17,9 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "paths": {
-      "services/*": [ "services/*" ],
-    }
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",
