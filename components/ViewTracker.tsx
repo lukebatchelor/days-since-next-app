@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Backdrop, Box, Button, Fab, Fade, makeStyles, Modal, Slide, TextField, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Controller, useForm } from 'react-hook-form';
@@ -47,13 +47,16 @@ export function ViewTracker(props: ViewTrackerProps) {
   const onCreateClick = () => {};
   const onCheckinDateChange = (e: React.ChangeEvent<HTMLInputElement>) => setCheckinDate(e.target.valueAsDate);
 
+  useEffect(() => {
+    setCheckinDate(new Date());
+  }, []);
+
   if (!open || !tracker) return null;
   const checkins = appContext.checkins.filter((c) => c.tracker_id === tracker.id);
   const todayDateStr = new Date().toISOString().split('T')[0];
   const onAddCheckinClicked = () => {
     fetch('/api/checkins', { method: 'POST', body: JSON.stringify({ date: checkinDate, trackerId: tracker.id }) })
       .then((r) => r.json())
-      .then(console.log)
       .then(() => {
         appContext.refresh();
         onClose();

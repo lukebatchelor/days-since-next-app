@@ -6,5 +6,6 @@
   "files.associations": {
     "tsconfig.json": "jsonc",
     "*.tsconfig.json": "jsonc"
-  }
+  },
+  "editor.codeActionsOnSave": ["source.addMissingImports", "source.fixAll.eslint"]
 }

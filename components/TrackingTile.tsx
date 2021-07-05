@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
-import { Checkin, Tracker } from '@prisma/client';
 
 import { AppContext } from 'components/contexts/AppContext';
-import { red } from '@material-ui/core/colors';
-import teal from '@material-ui/core/colors/teal';
+import { teal } from '@material-ui/core/colors';
+import { Tracker } from '@prisma/client';
 
 const useStyles = makeStyles((theme) => ({
   progressBar: {

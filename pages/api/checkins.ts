@@ -1,15 +1,20 @@
 import { NextApiHandler } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { PostCheckinsReq } from 'typings/api';
+import { getSession } from 'next-auth/client';
 
 const prismaClient = new PrismaClient();
 
 const createCheckin: NextApiHandler = async (req, res) => {
   try {
+    const session = await getSession({ req });
     const { date, trackerId }: PostCheckinsReq = JSON.parse(req.body);
-    const checkin = await prismaClient.checkin.create({ data: { checkin_date: date, tracker_id: trackerId } });
+    const checkin = await prismaClient.checkin.create({
+      data: { checkin_date: date, tracker_id: trackerId, userId: session.user.id },
+    });
     return res.status(200).send({ checkin });
   } catch (err) {
+    console.error(err);
     return res.status(500).end('Internal server error');
   }
 };

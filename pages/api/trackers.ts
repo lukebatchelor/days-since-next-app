@@ -1,13 +1,17 @@
 import { PostUsersRequest } from 'typings/api';
 import { NextApiHandler } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { getSession } from 'next-auth/client';
 
 const prismaClient = new PrismaClient();
 
 const createTracker: NextApiHandler = async (req, res) => {
   try {
+    const session = await getSession({ req });
     const { name, expiryDays }: PostUsersRequest = JSON.parse(req.body);
-    const tracker = await prismaClient.tracker.create({ data: { name, expiry_days: expiryDays } });
+    const tracker = await prismaClient.tracker.create({
+      data: { name, expiry_days: Number(expiryDays), userId: session.user.id },
+    });
     return res.status(200).send({ tracker });
   } catch (err) {
     console.error(err);
