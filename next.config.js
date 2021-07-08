@@ -1,4 +1,8 @@
-module.exports = {
-  // material ui does not support strict mode
+const withPWA = require('next-pwa');
+
+module.exports = withPWA({
   reactStrictMode: false,
-};
+  pwa: {
+    dest: 'public',
+  },
+});

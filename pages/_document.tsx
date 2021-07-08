@@ -6,6 +6,13 @@ export default function MyDocument() {
   return (
     <Html lang="en">
       <Head>
+        <meta name="application-name" content="Days Since" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Days Since" />
+        <meta name="description" content="Best habit tracker in the world" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </Head>
       <body>
