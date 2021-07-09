@@ -24,12 +24,13 @@ import {
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import { signIn, signOut, useSession } from 'next-auth/client';
+import { useRouter } from 'next/dist/client/router';
 
 import { AppContext } from '../components/contexts/AppContext';
 import { CreateTracker } from '../components/CreateTracker';
 import { TrackingTile } from '../components/TrackingTile';
 import { ViewTracker } from '../components/ViewTracker';
-import { useRouter } from 'next/dist/client/router';
+import { getDaysLeft } from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {},
@@ -61,6 +62,13 @@ export default function Home() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const trackers = appContext && appContext.trackers ? appContext.trackers : [];
+  const sortedTrackers = trackers.sort((a, b) => {
+    const aDaysLeft = getDaysLeft(a, appContext.checkins);
+    const bDaysLeft = getDaysLeft(b, appContext.checkins);
+    return aDaysLeft - bDaysLeft;
+  });
 
   return (
     <Box>
@@ -106,9 +114,8 @@ export default function Home() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {appContext &&
-                appContext.trackers &&
-                appContext.trackers.map((tracker) => (
+              {sortedTrackers &&
+                sortedTrackers.map((tracker) => (
                   <TrackingTile key={tracker.id} trackerId={tracker.id} onTrackerClick={onTrackerClick} />
                 ))}
             </TableBody>

@@ -5,6 +5,7 @@ import { AppContext } from 'components/contexts/AppContext';
 import { teal } from '@material-ui/core/colors';
 import { Tracker } from '@prisma/client';
 import { red, orange, yellow, green } from '@material-ui/core/colors';
+import { getDaysLeft } from '../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   progressBar: {
@@ -23,14 +24,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '30px',
   },
 }));
-
-function getDaysBetween(d1: Date, d2: Date) {
-  console.log({ d1, d2 });
-  const d1Start = new Date(d1.toISOString().split('T')[0]);
-  const d2Start = new Date(d2.toISOString().split('T')[0]);
-  // @ts-ignore
-  return Math.round(Math.abs(d1Start - d2Start) / (1000 * 60 * 60 * 24));
-}
 
 function getColor(daysLeft: number, expiryDays: number) {
   const percent = (daysLeft / expiryDays) * 100;
@@ -54,11 +47,8 @@ export function TrackingTile(props: TrackingTileProps) {
   const tracker = trackers.find((t) => t.id === trackerId);
   if (!tracker) return <Box>Invalid tracker id</Box>;
 
-  const lastCheckin = checkins.filter((c) => c.tracker_id === trackerId)[0];
-  const lastCheckinDate = lastCheckin ? new Date(lastCheckin.checkin_date) : new Date();
-  const daysBetween = getDaysBetween(lastCheckinDate, new Date());
-  const daysLeft = tracker.expiry_days - daysBetween;
-  const fillPercent = (daysLeft / tracker.expiry_days) * 100;
+  const daysLeft = getDaysLeft(tracker, checkins);
+  const fillPercent = Math.max(daysLeft / tracker.expiry_days, 0) * 100;
 
   return (
     <TableRow key={tracker.id}>
@@ -75,7 +65,11 @@ export function TrackingTile(props: TrackingTileProps) {
           </Box>
         </Box>
       </TableCell>
-      <TableCell align="center" className={classes.dayCounter}>
+      <TableCell
+        align="center"
+        className={classes.dayCounter}
+        style={{ color: getColor(daysLeft, tracker.expiry_days) }}
+      >
         {daysLeft}
       </TableCell>
     </TableRow>
