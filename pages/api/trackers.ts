@@ -1,4 +1,4 @@
-import { PostUsersRequest } from 'typings/api';
+import { DeleteTrackerReq, PostUsersRequest } from 'typings/api';
 import { NextApiHandler } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { getSession } from 'next-auth/client';
@@ -36,10 +36,13 @@ const editTracker: NextApiHandler = async (req, res) => {
   }
 };
 
-const removeTracker: NextApiHandler = (req, res) => {
+const removeTracker: NextApiHandler = async (req, res) => {
   try {
+    const { trackerId }: DeleteTrackerReq = JSON.parse(req.body);
+    await prismaClient.tracker.delete({ where: { id: trackerId } });
     return res.status(200).json({});
   } catch (error) {
+    console.error(error);
     return res.status(500).end('Internal server error');
   }
 };

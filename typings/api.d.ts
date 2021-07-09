@@ -11,3 +11,11 @@ declare type PostCheckinsReq = {
   date: Date;
   trackerId: number;
 };
+declare type DeleteCheckinsReq = {
+  checkinId: number;
+};
+
+// Trackers
+declare type DeleteTrackerReq = {
+  trackerId: number;
+};

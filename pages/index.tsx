@@ -10,6 +10,13 @@ import {
   makeStyles,
   Menu,
   MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Toolbar,
   Typography,
   useTheme,
@@ -90,13 +97,23 @@ export default function Home() {
         <Typography variant="h4" gutterBottom>
           Your Trackers
         </Typography>
-        <Box>
-          {appContext &&
-            appContext.trackers &&
-            appContext.trackers.map((tracker) => (
-              <TrackingTile key={tracker.id} trackerId={tracker.id} onTrackerClick={onTrackerClick} />
-            ))}
-        </Box>
+        <TableContainer component={Paper}>
+          <Table className="" aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Tracker</TableCell>
+                <TableCell align="right">Days left</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {appContext &&
+                appContext.trackers &&
+                appContext.trackers.map((tracker) => (
+                  <TrackingTile key={tracker.id} trackerId={tracker.id} onTrackerClick={onTrackerClick} />
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <CreateTracker />
         <ViewTracker open={!!selectedTracker} tracker={selectedTracker} onClose={onViewTrackerClose} />
       </Container>

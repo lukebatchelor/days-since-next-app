@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
 }
 
 model Tracker {
@@ -16,7 +17,7 @@ model Tracker {
   name        String
   expiry_days Int       @default(0)
   checkins    Checkin[]
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Checkin {
@@ -24,8 +25,8 @@ model Checkin {
   userId       String
   tracker_id   Int
   checkin_date DateTime @default(now())
-  tracker      Tracker  @relation(fields: [tracker_id], references: [id])
-  user         User     @relation(fields: [userId], references: [id])
+  tracker      Tracker  @relation(fields: [tracker_id], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Auth

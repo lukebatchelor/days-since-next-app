@@ -1,14 +1,16 @@
 import React, { useContext } from 'react';
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, makeStyles, TableCell, TableRow, Typography } from '@material-ui/core';
 
 import { AppContext } from 'components/contexts/AppContext';
 import { teal } from '@material-ui/core/colors';
 import { Tracker } from '@prisma/client';
+import { red, orange, yellow, green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   progressBar: {
     border: '1px solid black',
-    width: '70vw',
+    width: '60vw',
+    height: '40px',
   },
   progressFilled: {
     display: 'flex',
@@ -16,9 +18,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   dayCounter: {
-    flexGrow: 1,
     fontSize: '24px',
-    textAlign: 'center',
+    verticalAlign: 'middle',
+    paddingTop: '30px',
   },
 }));
 
@@ -28,6 +30,14 @@ function getDaysBetween(d1: Date, d2: Date) {
   const d2Start = new Date(d2.toISOString().split('T')[0]);
   // @ts-ignore
   return Math.round(Math.abs(d1Start - d2Start) / (1000 * 60 * 60 * 24));
+}
+
+function getColor(daysLeft: number, expiryDays: number) {
+  const percent = (daysLeft / expiryDays) * 100;
+  if (percent > 70) return green[500];
+  if (percent > 50) return yellow[600];
+  if (percent > 20) return orange[500];
+  return red[500];
 }
 
 type TrackingTileProps = {
@@ -45,18 +55,29 @@ export function TrackingTile(props: TrackingTileProps) {
   if (!tracker) return <Box>Invalid tracker id</Box>;
 
   const lastCheckin = checkins.filter((c) => c.tracker_id === trackerId)[0];
-  const daysBetween = getDaysBetween(lastCheckin ? new Date(lastCheckin.checkin_date) : new Date(), new Date());
-  const fillPercent = (daysBetween / tracker.expiry_days) * 100;
+  const lastCheckinDate = lastCheckin ? new Date(lastCheckin.checkin_date) : new Date();
+  const daysBetween = getDaysBetween(lastCheckinDate, new Date());
+  const daysLeft = tracker.expiry_days - daysBetween;
+  const fillPercent = (daysLeft / tracker.expiry_days) * 100;
 
   return (
-    <Box mt={4} onClick={() => onTrackerClick(tracker)}>
-      <Typography>{tracker.name}</Typography>
-      <Box display="flex" flexDirection="row">
-        <Box className={classes.progressBar}>
-          <Box className={classes.progressFilled} style={{ width: `${fillPercent}%` }}></Box>
+    <TableRow key={tracker.id}>
+      <TableCell component="th" scope="row">
+        <Box onClick={() => onTrackerClick(tracker)}>
+          <Typography>{tracker.name}</Typography>
+          <Box display="flex" flexDirection="row">
+            <Box className={classes.progressBar}>
+              <Box
+                className={classes.progressFilled}
+                style={{ width: `${fillPercent}%`, background: getColor(daysLeft, tracker.expiry_days) }}
+              ></Box>
+            </Box>
+          </Box>
         </Box>
-        <Box className={classes.dayCounter}>{daysBetween} days</Box>
-      </Box>
-    </Box>
+      </TableCell>
+      <TableCell align="center" className={classes.dayCounter}>
+        {daysLeft}
+      </TableCell>
+    </TableRow>
   );
 }

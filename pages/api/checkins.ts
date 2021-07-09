@@ -1,6 +1,6 @@
 import { NextApiHandler } from 'next';
-import { PrismaClient } from '@prisma/client';
-import { PostCheckinsReq } from 'typings/api';
+import { prisma, PrismaClient } from '@prisma/client';
+import { DeleteCheckinsReq, PostCheckinsReq } from 'typings/api';
 import { getSession } from 'next-auth/client';
 
 const prismaClient = new PrismaClient();
@@ -36,8 +36,10 @@ const editCheckin: NextApiHandler = async (req, res) => {
   }
 };
 
-const removeCheckin: NextApiHandler = (req, res) => {
+const removeCheckin: NextApiHandler = async (req, res) => {
   try {
+    const { checkinId }: DeleteCheckinsReq = JSON.parse(req.body);
+    await prismaClient.checkin.delete({ where: { id: checkinId } });
     return res.status(200).json({});
   } catch (error) {
     return res.status(500).end('Internal server error');
